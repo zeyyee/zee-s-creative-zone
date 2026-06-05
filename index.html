@@ -29,101 +29,119 @@
     </div>
 
     <script>
-    function startFortuneFlow() {
-        document.getElementById("cookie").style.pointerEvents = "none";
-        showFortune();
+    // 글로벌 변수로 오디오 객체를 미리 생성해 둡니다.
+const michaelAudio = new Audio("./thats-what-she-said.mp3");
+const clubMusic = new Audio("./clubmusic.mp3");
+
+function startFortuneFlow() {
+    // [핵심] 사용자가 쿠키를 누른 '이 순간'에 소리를 아주 살짝 재생했다가 멈춰서 브라우저의 락(Lock)을 해제합니다.
+    michaelAudio.play().then(() => {
+        michaelAudio.pause();
+        michaelAudio.currentTime = 0;
+    }).catch(e => console.log("오디오 사전 잠금 해제:", e));
+    
+    // 클럽 음악도 미리 잠금을 해제해 둡니다.
+    clubMusic.play().then(() => {
+        clubMusic.pause();
+        clubMusic.currentTime = 0;
+    }).catch(e => console.log("오디오 사전 잠금 해제:", e));
+
+    // 중복 클릭 방지
+    document.getElementById("cookie").style.pointerEvents = "none";
+    
+    // 1. 운세 문구 즉시 출력
+    showFortune();
+    
+    // 2. 1.5초 지연 후 마이클 스콧 등장 및 잠금 해제된 음성 진짜로 재생!
+    setTimeout(() => {
+        playMichael();
+    }, 1500);
+}
+
+function showFortune() {
+    const fortunes = [
+        "You will die.",
+        "The fortune you seek is in another cookie.",
+        "The end is near.",
+        "Never happening.",
+        "Error 404: Fortune Not Found."
+    ];
+    const random = fortunes[Math.floor(Math.random() * fortunes.length)];
+    const fortuneBox = document.getElementById("fortuneBox");
+    
+    fortuneBox.innerHTML = random;
+    fortuneBox.style.display = "block";
+}
+
+function playMichael() {
+    // 이미 잠금이 풀린 오디오를 실행하므로 모바일에서도 백발백중 소리가 납니다!
+    michaelAudio.play().catch(e => alert("소리 재생 실패: " + e));
+
+    const face = document.getElementById("michaelFace");
+    face.style.display = "block";
+    face.style.animation = "boom 0.8s forwards";
+    
+    setTimeout(() => {
+        face.style.animation = "fadeOut 0.3s forwards";
+        setTimeout(() => { face.style.display = "none"; }, 300);
+
+        document.getElementById("monkey").style.display = "block";
+        document.getElementById("toilet").style.display = "block";
         
-        setTimeout(() => {
-            playMichael();
-        }, 1500);
-    }
+        startPoopDrop();
+    }, 2300); 
+}
 
-    function showFortune() {
-        const fortunes = [
-            "You will die.",
-            "The fortune you seek is in another cookie.",
-            "The end is near.",
-            "Never happening.",
-            "Error 404: Fortune Not Found."
-        ];
-        const random = fortunes[Math.floor(Math.random() * fortunes.length)];
-        const fortuneBox = document.getElementById("fortuneBox");
+function startPoopDrop() {
+    let count = 0;
+    const poopTrack = document.getElementById("poopTrack");
+    poopTrack.innerHTML = "";
+
+    const interval = setInterval(() => {
+        count++;
         
-        fortuneBox.innerHTML = random;
-        fortuneBox.style.display = "block";
-    }
-
-    function playMichael() {
-        // 오디오 경로 앞에 ./ 추가
-        const audio = new Audio("./thats-what-she-said.mp3");
-        audio.play().catch(e => console.log("모바일 오디오 정책 우회:", e));
-
-        const face = document.getElementById("michaelFace");
-        face.style.display = "block";
-        face.style.animation = "boom 0.8s forwards";
+        const poop = document.createElement("div");
+        poop.className = "falling-poop";
+        poop.innerHTML = "💩";
         
-        setTimeout(() => {
-            face.style.animation = "fadeOut 0.3s forwards";
-            setTimeout(() => { face.style.display = "none"; }, 300);
+        poopTrack.appendChild(poop);
 
-            document.getElementById("monkey").style.display = "block";
-            document.getElementById("toilet").style.display = "block";
+        if (count === 3) {
+            clearInterval(interval);
             
-            startPoopDrop();
-        }, 2300); 
-    }
+            setTimeout(() => {
+                const flushBtn = document.getElementById("flushBtn");
+                flushBtn.style.display = "inline-block";
+                flushBtn.style.animation = "pulse 1s infinite";
+            }, 600);
+        }
+    }, 1000);
+}
 
-    function startPoopDrop() {
-        let count = 0;
-        const poopTrack = document.getElementById("poopTrack");
-        poopTrack.innerHTML = "";
+function flushToilet() {
+    document.body.classList.add("club");
+    
+    document.getElementById("flushBtn").style.display = "none";
+    document.getElementById("toilet").style.animation = "flushShake 0.3s infinite";
+    
+    document.getElementById("monkey").style.animation = "fadeOut 0.5s forwards";
+    document.getElementById("poopTrack").style.animation = "fadeOut 0.5s forwards";
 
-        const interval = setInterval(() => {
-            count++;
-            
-            const poop = document.createElement("div");
-            poop.className = "falling-poop";
-            poop.innerHTML = "💩";
-            
-            poopTrack.appendChild(poop);
+    // 미리 잠금 해제해 둔 클럽 음악 재생!
+    clubMusic.play().catch(e => console.log("클럽 음악 재생 에러:", e));
 
-            if (count === 3) {
-                clearInterval(interval);
-                
-                setTimeout(() => {
-                    const flushBtn = document.getElementById("flushBtn");
-                    flushBtn.style.display = "inline-block";
-                    flushBtn.style.animation = "pulse 1s infinite";
-                }, 600);
-            }
-        }, 1000);
-    }
-
-    function flushToilet() {
-        document.body.classList.add("club");
-        
-        document.getElementById("flushBtn").style.display = "none";
-        document.getElementById("toilet").style.animation = "flushShake 0.3s infinite";
-        
-        document.getElementById("monkey").style.animation = "fadeOut 0.5s forwards";
-        document.getElementById("poopTrack").style.animation = "fadeOut 0.5s forwards";
-
-        // 오디오 경로 앞에 ./ 추가
-        const music = new Audio("./clubmusic.mp3");
-        music.play().catch(e => console.log("모바일 오디오 정책 우회:", e));
-
-        music.onended = function() {
-            document.body.classList.remove("club");
-            document.getElementById("toilet").style.animation = "none";
-            document.getElementById("toilet").style.display = "none";
-            document.getElementById("monkey").style.display = "none";
-            document.getElementById("monkey").style.animation = "none";
-            document.getElementById("poopTrack").innerHTML = "";
-            document.getElementById("poopTrack").style.animation = "none";
-            document.getElementById("cookie").style.pointerEvents = "auto"; 
-            document.getElementById("fortuneBox").style.display = "none";
-        };
-    }
+    clubMusic.onended = function() {
+        document.body.classList.remove("club");
+        document.getElementById("toilet").style.animation = "none";
+        document.getElementById("toilet").style.display = "none";
+        document.getElementById("monkey").style.display = "none";
+        document.getElementById("monkey").style.animation = "none";
+        document.getElementById("poopTrack").innerHTML = "";
+        document.getElementById("poopTrack").style.animation = "none";
+        document.getElementById("cookie").style.pointerEvents = "auto"; 
+        document.getElementById("fortuneBox").style.display = "none";
+    };
+}
     </script>
 </body>
 </html>
