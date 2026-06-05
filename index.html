@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's Fortune Chaos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <h1 class="title">🥠 Today's Fortune 🥠</h1>
+
+    <div class="cookie-container">
+        <img src="./cookie.png" id="cookie" onclick="startFortuneFlow()" alt="Fortune Cookie">
+    </div>
+
+    <div id="fortuneBox"></div>
+
+    <img src="./michael.png" id="michaelFace" alt="Michael Scott">
+
+    <div id="interactionZone">
+        <div id="monkey">🐒</div>
+        <div id="poopTrack"></div>
+        <div id="toilet">🚽</div>
+        <button id="flushBtn" onclick="flushToilet()">Flush</button>
+    </div>
+
+    <script>
+    function startFortuneFlow() {
+        document.getElementById("cookie").style.pointerEvents = "none";
+        showFortune();
+        
+        setTimeout(() => {
+            playMichael();
+        }, 1500);
+    }
+
+    function showFortune() {
+        const fortunes = [
+            "You will die.",
+            "The fortune you seek is in another cookie.",
+            "The end is near.",
+            "Never happening.",
+            "Error 404: Fortune Not Found."
+        ];
+        const random = fortunes[Math.floor(Math.random() * fortunes.length)];
+        const fortuneBox = document.getElementById("fortuneBox");
+        
+        fortuneBox.innerHTML = random;
+        fortuneBox.style.display = "block";
+    }
+
+    function playMichael() {
+        // 오디오 경로 앞에 ./ 추가
+        const audio = new Audio("./thats-what-she-said.mp3");
+        audio.play().catch(e => console.log("모바일 오디오 정책 우회:", e));
+
+        const face = document.getElementById("michaelFace");
+        face.style.display = "block";
+        face.style.animation = "boom 0.8s forwards";
+        
+        setTimeout(() => {
+            face.style.animation = "fadeOut 0.3s forwards";
+            setTimeout(() => { face.style.display = "none"; }, 300);
+
+            document.getElementById("monkey").style.display = "block";
+            document.getElementById("toilet").style.display = "block";
+            
+            startPoopDrop();
+        }, 2300); 
+    }
+
+    function startPoopDrop() {
+        let count = 0;
+        const poopTrack = document.getElementById("poopTrack");
+        poopTrack.innerHTML = "";
+
+        const interval = setInterval(() => {
+            count++;
+            
+            const poop = document.createElement("div");
+            poop.className = "falling-poop";
+            poop.innerHTML = "💩";
+            
+            poopTrack.appendChild(poop);
+
+            if (count === 3) {
+                clearInterval(interval);
+                
+                setTimeout(() => {
+                    const flushBtn = document.getElementById("flushBtn");
+                    flushBtn.style.display = "inline-block";
+                    flushBtn.style.animation = "pulse 1s infinite";
+                }, 600);
+            }
+        }, 1000);
+    }
+
+    function flushToilet() {
+        document.body.classList.add("club");
+        
+        document.getElementById("flushBtn").style.display = "none";
+        document.getElementById("toilet").style.animation = "flushShake 0.3s infinite";
+        
+        document.getElementById("monkey").style.animation = "fadeOut 0.5s forwards";
+        document.getElementById("poopTrack").style.animation = "fadeOut 0.5s forwards";
+
+        // 오디오 경로 앞에 ./ 추가
+        const music = new Audio("./clubmusic.mp3");
+        music.play().catch(e => console.log("모바일 오디오 정책 우회:", e));
+
+        music.onended = function() {
+            document.body.classList.remove("club");
+            document.getElementById("toilet").style.animation = "none";
+            document.getElementById("toilet").style.display = "none";
+            document.getElementById("monkey").style.display = "none";
+            document.getElementById("monkey").style.animation = "none";
+            document.getElementById("poopTrack").innerHTML = "";
+            document.getElementById("poopTrack").style.animation = "none";
+            document.getElementById("cookie").style.pointerEvents = "auto"; 
+            document.getElementById("fortuneBox").style.display = "none";
+        };
+    }
+    </script>
+</body>
+</html>

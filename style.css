@@ -1,0 +1,186 @@
+/* 기본 테마 및 반응형 설정 */
+body {
+    font-family: "Jua", sans-serif;
+    text-align: center;
+    background: #f7f1e3;
+    color: #2c3e50;
+    margin: 0;
+    padding: 10px;
+    overflow-x: hidden;
+    transition: background 0.3s;
+    /* 모바일에서 터치 시 파란 박스 생기는 현상 방지 */
+    -webkit-tap-highlight-color: transparent; 
+}
+
+/* 상단 타이틀 (모바일 대응 가변 크기) */
+.title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: clamp(30px, 8vw, 45px); /* 화면 크기에 따라 자동 조절 */
+    margin-top: 20px;
+    color: #111;
+    text-shadow: 2px 2px 0px #ffda79;
+}
+
+/* 쿠키 크기 조정 */
+.cookie-container {
+    margin: 15px auto;
+}
+
+#cookie {
+    width: clamp(140px, 40vw, 200px); /* 모바일에서는 살짝 작게 */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#cookie:hover {
+    transform: scale(1.1) rotate(-8deg);
+}
+
+/* 운세 텍스트 박스 */
+#fortuneBox {
+    display: none;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: clamp(20px, 5vw, 32px);
+    color: #ff5252;
+    background: #ffffff;
+    padding: 10px 20px;
+    border-radius: 50px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    display: inline-block;
+    margin: 15px auto;
+    border: 3px solid #111;
+    max-width: 85%; /* 화면 밖으로 나가는 것 방지 */
+    word-break: break-word;
+}
+
+/* 마이클 스콧 팝업 (모바일 화면 맞춤 크기) */
+#michaelFace {
+    display: none;
+    width: min(350px, 85vw); /* 모바일 화면 폭을 넘지 않도록 제한 */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 9999;
+}
+
+/* [핵심] 수직 정렬을 위한 인터랙션 구역 (Flex 구조 활용) */
+#interactionZone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    max-width: 300px;
+    margin: 10px auto 0 auto;
+    min-height: 340px; /* 모바일에서 공간 부족으로 겹치는 현상 방지 */
+}
+
+/* 원숭이 스타일 */
+#monkey {
+    display: none;
+    font-size: clamp(60px, 15vw, 80px);
+    z-index: 2;
+    margin-bottom: 5px;
+}
+
+/* 응아가 위에서 아래로 수직 낙하해 누적될 세로 트랙 */
+#poopTrack {
+    width: 100px;
+    height: 140px; /* 고정된 높이를 주어 모바일에서도 일정하게 작동 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; 
+    align-items: center;
+    z-index: 1;
+}
+
+/* 원숭이 엉덩이에서 변기로 툭 떨어지는 애니메이션 */
+.falling-poop {
+    font-size: clamp(40px, 12vw, 50px);
+    margin-top: -25px; /* 쌓일 때 자연스럽게 겹치도록 */
+    animation: dropVertical 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* 변기 스타일 */
+#toilet {
+    display: none;
+    font-size: clamp(70px, 18vw, 90px);
+    margin-top: 5px;
+    z-index: 2;
+}
+
+/* 물내리기 버튼 (변기 바로 아래 배치) */
+#flushBtn {
+    display: none;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: clamp(18px, 5vw, 24px);
+    padding: 8px 20px;
+    background-color: #ff5252;
+    color: white;
+    border: 3px solid #111;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px #111;
+    margin-top: 15px;
+    transition: 0.1s;
+}
+
+#flushBtn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #111;
+}
+
+/* 세로 낙하 애니메이션 (트랙 높이에 맞춤) */
+@keyframes dropVertical {
+    0% {
+        transform: translateY(-130px) scale(0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes boom {
+    0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+    70% { transform: translate(-50%, -50%) scale(1.1) rotate(360deg); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: scale(0.8); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes flushShake {
+    0% { transform: translate(2px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(0px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* 클럽 효과 */
+.club {
+    animation: rave .15s infinite;
+}
+
+@keyframes rave {
+    0% { background: #ff007f; }
+    20% { background: #00f0ff; }
+    40% { background: #76ff03; }
+    60% { background: #ffeb3b; }
+    80% { background: #9c27b0; }
+    100% { background: #ff007f; }
+}
